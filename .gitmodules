@@ -1,0 +1,3 @@
+[submodule "coref"]
+	path = coref
+	url = https://github.com/mandarjoshi90/coref
