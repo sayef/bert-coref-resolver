@@ -36,7 +36,7 @@ os.environ['GPU'] = '-1'
 
 resolver = Resolver(genre, model_name)
 
-text = "While the world was at a standstill during the first wave of the COVID-19 pandemic, Syntegon’s validation support teams were not. They continued to travel by air, train, or car. Our Minneapolis validation team was able to continue to go to our customer sites to keep progress going and make sure the time to market was not impacted by COVID-19 travel restrictions or validation delays. The group continues to travel to customer sites across the country helping our customers validate their new and existing lines. They have been everywhere from California to New York. Our validation supervisor has even been traveling via camper to stay safe during the pandemic – you can see his mobile workstation below!"
+text = "Deepika has a dog. She loves him. The movie star has always been fond of animals"
 
 resolved = resolver.resolve(text)
 print(resolved)
