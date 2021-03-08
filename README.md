@@ -1,5 +1,5 @@
 ### SpanBERT Coref Resolver
-This repository is just a wrapper on top of [coref](https://github.com/mandarjoshi90/coref) and with the help of this [notebook] (https://colab.research.google.com/drive/1SlERO9Uc9541qv6yH26LJz5IM9j7YVra#scrollTo=H0xPknceFORt). The additional work is the replacement of the mentions.
+This repository is just a wrapper on top of [coref](https://github.com/mandarjoshi90/coref) and with the help of this [notebook](https://colab.research.google.com/drive/1SlERO9Uc9541qv6yH26LJz5IM9j7YVra#scrollTo=H0xPknceFORt). The additional work is the replacement of the mentions.
 
 #### How to use
 
@@ -15,9 +15,7 @@ pip install -r requirements.txt
 
 ##### Usage
 
-1. 
-
-2. Python demo file:
+1. Python demo file:
 
 ```
 import os
