@@ -7,31 +7,65 @@ import os
 import sys
 import re
 import json
-import tensorflow as tf
-from coref import util
-from coref.bert import tokenization
-from nltk.tokenize import sent_tokenize
-import warnings
-warnings.filterwarnings("ignore")
 
+# warning hadling for tensrflow
+import warnings
+warnings.filterwarnings('ignore')
+import logging
+import tensorflow as tf
+if type(tf.contrib) != type(tf): tf.contrib._warning = None
+tf.autograph.set_verbosity(0)
+tf.get_logger().setLevel('ERROR')
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+
+from .coref import util
+from .coref.bert import tokenization
+from nltk.tokenize import sent_tokenize
+
+
+
+_dir = os.path.dirname(os.path.abspath(__file__))
 
 class Resolver():
-    def __init__(self, genre, model_name):
-        self.genre = genre
-        self.model_name = model_name
-        self.tokenizer = tokenization.FullTokenizer(vocab_file="coref/cased_config_vocab/vocab.txt", do_lower_case=False)
-        self.max_segment = None
-        for line in open('coref/experiments.conf'):
-            if line.startswith(model_name):
-                self.max_segment = True
-            elif line.strip().startswith("max_segment_len"):
-                if self.max_segment:
-                    self.max_segment = int(line.strip().split()[-1])
-                    break
-        self.model = util.get_model(util.initialize_from_env())
-        self.session = tf.Session()
-        self.model.restore(self.session)
-      
+    def __init__(self, genre, model_dir, model_name):
+        f = open(os.devnull, 'w')
+
+        stdout = sys.stdout
+        stderr = sys.stderr
+
+        sys.stderr = f
+        sys.stdout = f
+
+        try:
+            self.genre = genre
+            self.model_name = model_name
+            os.environ['model_name'] = model_name
+            os.environ['data_dir'] = model_dir
+            os.environ['GPU'] = '-1'
+
+            self.tokenizer = tokenization.FullTokenizer(vocab_file=os.path.join(_dir, "coref/cased_config_vocab/vocab.txt"), do_lower_case=False)
+            self.max_segment = None
+            for line in open(os.path.join(_dir, 'coref/experiments.conf')):
+                if line.startswith(model_name):
+                    self.max_segment = True
+                elif line.strip().startswith("max_segment_len"):
+                    if self.max_segment:
+                        self.max_segment = int(line.strip().split()[-1])
+                        break
+            self.model = util.get_model(util.initialize_from_env())
+            self.session = tf.Session()
+            self.model.restore(self.session)
+
+        except Exception as e:
+            sys.stdout = stdout
+            sys.stderr = stderr
+            raise e
+        finally:
+            sys.stdout = stdout
+            sys.stderr = stderr
+
+        
 
     def encode_input(self, text):
         data = {
