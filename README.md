@@ -10,35 +10,41 @@ git clone --recurse-submodules https://github.com/sayef/bert-coref-resolver.git
 cd bert-coref-resolver/coref
 pip install -r requirements.txt
 ./setup_all.sh
-./download_pretrained.sh spanbert_base
+./download_pretrained.sh spanbert_base models
 ```
 
 ##### Usage
 
-1. Start by adding `coref` module to PYTHONPATH and launch your python script. 
-`export PYTHONPATH='coref' python`
+1. 
 
-2. Python script / file
+2. Python demo file:
 
 ```
 import os
-from coref_resolver import Resolver
+import nltk
+nltk.download('punkt')
+import sys
+import warnings
+import contextlib
 
+from resolver import Resolver
+    
 
 genre = "nw" # Other options: https://natural-language-understanding.fandom.com/wiki/OntoNotes
 model_name = "spanbert_base" # The fine-tuned model to use. Options are: bert_base, spanbert_base, bert_large, spanbert_large
+model_dir = os.path.join("./coref/models") # where you have extracted pretrained model, if possible give absolute path
+
+# coref resolver that loads model
+coref_resolver = Resolver(genre, model_dir, model_name)
+    
+# text fot coref resolution
+text = "Deepika has a dog. She loves him. The movie star has always been fond of animals."
+
+# call resolve method as many without loading model again
 
 
-# needed for tensorflow model configuration setting
-os.environ['data_dir'] = "coref"
-os.environ['model_name'] = model_name
-os.environ['GPU'] = '-1'
+resolved = coref_resolver.resolve(text)
 
-resolver = Resolver(genre, model_name)
-
-text = "Deepika has a dog. She loves him. The movie star has always been fond of animals"
-
-resolved = resolver.resolve(text)
 print(resolved)
 ```
 
