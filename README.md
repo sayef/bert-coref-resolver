@@ -21,16 +21,13 @@ pip install -r requirements.txt
 import os
 import nltk
 nltk.download('punkt')
-import sys
-import warnings
-import contextlib
 
 from resolver import Resolver
     
 
 genre = "nw" # Other options: https://natural-language-understanding.fandom.com/wiki/OntoNotes
 model_name = "spanbert_base" # The fine-tuned model to use. Options are: bert_base, spanbert_base, bert_large, spanbert_large
-model_dir = os.path.join("./coref/models") # where you have extracted pretrained model, if possible give absolute path
+model_dir = "./coref/models" # where you have extracted pretrained model, from outside this module use absolute path
 
 # coref resolver that loads model
 coref_resolver = Resolver(genre, model_dir, model_name)
