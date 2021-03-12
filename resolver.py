@@ -19,10 +19,9 @@ tf.get_logger().setLevel('ERROR')
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
-from .coref import util
-from .coref.bert import tokenization
+from coref import util
+from coref.bert import tokenization
 from nltk.tokenize import sent_tokenize
-
 
 
 _dir = os.path.dirname(os.path.abspath(__file__))
@@ -138,13 +137,14 @@ class Resolver():
 
         for line in text:
             tokens += line.split(" ")
-            
+
         for cluster in clusters:
             for mention in cluster[1:]:
-                tokens[mention[0][0]] = " ".join(tokens[ cluster[0][0][0]:cluster[0][0][1]])
-                for m in range(int(mention[0][0])+1, int(mention[0][1])):
-                    tokens[m] = ""
-
+                if len(tokens[mention[0][0]]):
+                    tokens[mention[0][0]] = " ".join(tokens[cluster[0][0][0]:cluster[0][0][1]])
+                    for m in range(int(mention[0][0])+1, int(mention[0][1])):
+                        tokens[m] = ""
+                
         resolved = " ".join(tokens)
         resolved = re.sub(' +', ' ', resolved)
         return resolved
@@ -161,7 +161,6 @@ class Resolver():
     
 
     def resolve(self, text):
-        text = sent_tokenize(text)
         # print(text)
         example = self.encode_input(text)
         tensorized_example = self.model.tensorize_example(example, is_training=False)
