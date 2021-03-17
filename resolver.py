@@ -27,7 +27,7 @@ from nltk.tokenize import sent_tokenize
 _dir = os.path.dirname(os.path.abspath(__file__))
 
 class Resolver():
-    def __init__(self, genre, model_dir, model_name):
+    def __init__(self, genre, model_dir, model_name, gpu_id="-1"):
         f = open(os.devnull, 'w')
 
         stdout = sys.stdout
@@ -41,7 +41,7 @@ class Resolver():
             self.model_name = model_name
             os.environ['model_name'] = model_name
             os.environ['data_dir'] = model_dir
-            os.environ['GPU'] = '-1'
+            os.environ['GPU'] = gpu_id
 
             self.tokenizer = tokenization.FullTokenizer(vocab_file=os.path.join(_dir, "coref/cased_config_vocab/vocab.txt"), do_lower_case=False)
             self.max_segment = None
@@ -64,7 +64,7 @@ class Resolver():
             sys.stdout = stdout
             sys.stderr = stderr
 
-        
+
 
     def encode_input(self, text):
         data = {
@@ -97,7 +97,7 @@ class Resolver():
                 data['speakers'][-1].append("-")
                 data['sentence_map'].append(sent_num)
                 data['subtoken_map'].append(subtoken_num)
-                
+
                 if token.startswith("##"):
                     token = token[2:]
                 if len(ctoken) == len(token):
@@ -144,7 +144,7 @@ class Resolver():
                     tokens[mention[0][0]] = " ".join(tokens[cluster[0][0][0]:cluster[0][0][1]])
                     for m in range(int(mention[0][0])+1, int(mention[0][1])):
                         tokens[m] = ""
-                
+
         resolved = " ".join(tokens)
         resolved = re.sub(' +', ' ', resolved)
         return resolved
@@ -156,9 +156,9 @@ class Resolver():
             raw_tokens = line.split()
             tokens = line.split(" ")
             tokens_fixed += tokens
-            
+
         return tokens_fixed
-    
+
 
     def resolve(self, text):
         # print(text)
